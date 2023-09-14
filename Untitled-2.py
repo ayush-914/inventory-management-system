@@ -46,11 +46,6 @@ class Main(QMainWindow, FORM_CLASS):
         result = cursor.execute(command)
         self.table.setRowCount(0) 
 
-        for row_number, row_data in enumerate(result): 
-            self.table.insertRow(row_number)
-            for column_number, data in enumerate(row_data): 
-                self.table.setItem(row_number, column_number, QTableWidgetItem(str(data)))
-
         
         cursor2 = db.cursor()
         cursor3 = db.cursor()
@@ -97,21 +92,6 @@ class Main(QMainWindow, FORM_CLASS):
             for column_number, data in enumerate(row_data): 
                 self.table.setItem(row_number, column_number, QTableWidgetItem(str(data)))
     
-
-    def LEVEL(self): 
-        db = sqlite3.connect(resource_path("final_parts_table.db"))
-        cursor = db.cursor()
-
-        command = ''' SELECT Reference, PartName, Count from data order by Count asc LIMIT 3'''
-        result = cursor.execute(command)
-        self.table2.setRowCount(0) 
-
-        for row_number, row_data in enumerate(result): 
-            self.table2.insertRow(row_number)
-            for column_number, data in enumerate(row_data): 
-                self.table2.setItem(row_number, column_number, QTableWidgetItem(str(data)))
-
-    
     def NAVIGATE(self): 
         db = sqlite3.connect(resource_path("final_parts_table.db"))
         cursor = db.cursor()
@@ -129,61 +109,3 @@ class Main(QMainWindow, FORM_CLASS):
         self.min_diameter.setText(str(val[6]))
         self.max_diameter.setText(str(val[7]))
         self.count.setValue(val[8])
-    
-    def UPDATE(self): 
-        db = sqlite3.connect(resource_path("final_parts_table.db"))
-        cursor = db.cursor()
-
-        id_ = int(self.id.text())
-        reference_ = self.reference.text()
-        part_name_ = self.part_name.text()
-        min_area_ = self.min_area.text()
-        max_area_ = self.max_area.text()
-        number_of_holes_ = self.number_of_holes.text()
-        min_diameter_ = self.min_diameter.text()
-        max_diameter_ = self.max_diameter.text()
-        count_ = str(self.count.value())
-
-        row = (reference_,part_name_,min_area_,max_area_,number_of_holes_,min_diameter_,max_diameter_,count_)
-        command = ''' UPDATE data SET Reference=?,PartName=?,MinArea=?,MaxArea=?,NumberOfHoles=?,MinDiameter=?,MaxDiameter=?,Count=?'''
-        cursor.execute(command,row)
-        db.commit()
-
-
-    def DELETE(self): 
-        db = sqlite3.connect(resource_path("final_parts_table.db"))
-        cursor = db.cursor()
-        d = self.id.text()
-
-        command = ''' DELETE FROM data WHERE ID=? '''
-        cursor.execute(command,d)
-        db.commit()
-
-
-    def ADD(self): 
-        db = sqlite3.connect(resource_path("final_parts_table.db"))
-        cursor = db.cursor()
-
-        reference_ = self.reference.text()
-        part_name_ = self.part_name.text()
-        min_area_ = self.min_area.text()
-        max_area_ = self.max_area.text()
-        number_of_holes_ = self.number_of_holes.text()
-        min_diameter_ = self.min_diameter.text()
-        max_diameter_ = self.max_diameter.text()
-        count_ = str(self.count.value())
-
-        row = (reference_,part_name_,min_area_,max_area_,number_of_holes_,min_diameter_,max_diameter_,count_)
-        command = ''' INSERT INTO data(Reference,PartName,MinArea,MaxArea,NumberOfHoles,MinDiameter,MaxDiameter,Count) VALUES (?,?,?,?,?,?,?,?)'''
-        cursor.execute(command,row)
-        db.commit()
-
-def main(): 
-    app = QApplication(sys.argv)
-    window = Main()
-    window.show()
-    app.exec_()
-
-
-if _name_=='__main__': 
-    main()
